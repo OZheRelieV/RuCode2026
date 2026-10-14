@@ -5,9 +5,9 @@ from huggingface_hub import hf_hub_download
 from torchaudio.functional import resample
 from onnxruntime import InferenceSession
 from tqdm.auto import tqdm
-from pandas import read_csv
+from pandas import DataFrame
 from pathlib import Path
-
+from argparse import ArgumentParser
 
 def read16k(path):
     wav, sr = load_audio(path, dtype="float32")
@@ -46,6 +46,10 @@ def predict_logit(path):
 
 
 if __name__ == "__main__":
+    parser = ArgumentParser()
+    parser.add_argument("--test", required=True, type=Path)
+    args = parser.parse_args()
+
     onnx_path = hf_hub_download(
         repo_id="lab260/Spectra-AASIST3",
         filename="spectra-aasist3.onnx"
@@ -53,16 +57,14 @@ if __name__ == "__main__":
     sess = InferenceSession(onnx_path, providers=["CUDAExecutionProvider"])
     inp, out = sess.get_inputs()[0], sess.get_outputs()[0]
 
-    test_files = tuple(
-        map(
-            lambda x: f"public_test/{x}.wav",
-            sorted(map(lambda x: int(x.stem), Path("public_test/").iterdir()))
-        )
-    )
+    test_files = sorted(args.test.iterdir(), key=lambda path: int(path.stem))
 
     test_probs = [predict_logit(p) for p in tqdm(test_files)]
 
+    submit = DataFrame({
+        "idx": list(map(lambda x: Path(x).name, test_files)),
+        "score": test_probs
+    })
+
     Path("subs").mkdir(exist_ok=True)
-    submit = read_csv("subs/public_sample_submission.csv")
-    submit["score"] = test_probs
     submit.to_csv("subs/submission.csv", index=False)
