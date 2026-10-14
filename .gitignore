@@ -218,3 +218,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+public_test
+train
+subs
+main.ipynb
+zero_shot.py
+main copy.py
