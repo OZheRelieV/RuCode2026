@@ -128,7 +128,9 @@
 
 3. Скачать данные: [Ссылка на данные](https://drive.google.com/drive/folders/1RXBJiYEHBT3U9gOuzhguT5y8ytOjHrEx?usp=sharing)
 
-4. Данные распаковать и положить внутрь папки `c_task`
+    3.1 Скачать приватный тестовый набор: [Ссылка на данные](https://drive.google.com/drive/folders/1RXBJiYEHBT3U9gOuzhguT5y8ytOjHrEx)
+
+5. Данные распаковать и положить внутрь папки `c_task`
 - тренировочные данные в `train/`
 - публичный тестовый набор в `public_test`
 - приватный тестовый набор в `private_test`
@@ -140,7 +142,12 @@
 > source .venv/bin/activate
 
 7. Запустить решение
-> python main.py --test public_test/private_test
+
+     7.1 Инференс на публичном тестовом наборе
+     > python main.py --test public_test
+
+    7.2 Инференс на приватном тестовом наборе
+    > python main.py --test private_test
 
 > **В команде запуска обязательно выбрать один из вариантов public_test/private_test**
 
